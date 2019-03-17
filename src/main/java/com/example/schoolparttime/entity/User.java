@@ -1,24 +1,21 @@
 package com.example.schoolparttime.entity;
 
-import com.example.schoolparttime.SchoolparttimeApplication;
 import com.example.schoolparttime.entity.base.RequestModel;
 import com.example.schoolparttime.security.md5.Md5Util;
 import com.example.schoolparttime.security.rsa.RSAUtil;
 import com.google.gson.Gson;
-import org.springframework.boot.SpringApplication;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.security.PublicKey;
 import java.util.Base64;
-import java.util.Objects;
 
 @Entity(name = "t_user")
 public class User {
     @Id
     @GeneratedValue
-    private int id;
+    private long id;
 
     private String username;
 
@@ -26,23 +23,23 @@ public class User {
 
     private String verifypsw;
 
-    private int type = 1;
+    private int type = 0;
 
     public User() {
     }
 
-    public User(int id , String username, String password, String verifypsw, int type) {
+    public User(long id , String username, String password, String verifypsw, int type) {
         this.username = username;
         this.password = password;
         this.verifypsw = verifypsw;
         this.type = type;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
