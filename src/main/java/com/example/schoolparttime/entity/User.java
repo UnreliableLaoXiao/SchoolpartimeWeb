@@ -5,16 +5,11 @@ import com.example.schoolparttime.security.md5.Md5Util;
 import com.example.schoolparttime.security.rsa.RSAUtil;
 import com.google.gson.Gson;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import java.security.PublicKey;
 import java.util.Base64;
+import java.util.Date;
 
-@Entity(name = "t_user")
 public class User {
-    @Id
-    @GeneratedValue
     private long id;
 
     private String username;
@@ -83,10 +78,7 @@ public class User {
             + "yM4wIDAQAB";
 
     public static void main(String[] args) {
-        User user = new User(0, "xiaohei","123456","123",0);
-        RequestModel<User> model = new RequestModel<>("登录请求",user,"json",200);
-        String str =  new Gson().toJson(model);
-        getSignature(str);
+        System.out.println(new Date());
     }
 
 
@@ -108,4 +100,6 @@ public class User {
 
         }
     }
+
+
 }

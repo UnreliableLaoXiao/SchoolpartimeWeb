@@ -1,12 +1,7 @@
 package com.example.schoolparttime.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
-@Entity(name = "t_u_info")
 public class UserInfo {
 
-    @Id
     private Long id;
 
     private String username;
