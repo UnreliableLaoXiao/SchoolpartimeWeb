@@ -31,22 +31,21 @@ public class JdbcTemplateDemo2 {
 
     //  插入数据
     public static void insertData() {
-        JdbcTemplateObject jdbcTemplateObject = new JdbcTemplateObject();
-        JdbcTemplate jdbcTemplate = jdbcTemplateObject.getJdbcTemplate();
-//        调用jdbcTemplate对象中的方法实现操作
-        String sql = "insert into t_user (username,password,verifypsw,type) value(?,?,?,?)";
-        int rows = jdbcTemplate.update(sql, "xiaoheidff", "1234", "1234",0);
-        System.out.println("插入行数：" + rows);
+//        JdbcTemplateObject jdbcTemplateObject = new JdbcTemplateObject();
+//        JdbcTemplate jdbcTemplate = jdbcTemplateObject.getJdbcTemplate();
+////        调用jdbcTemplate对象中的方法实现操作
+//        String sql = "insert into t_m value(?,?,?,?)";
+//        int rows = jdbcTemplate.update(sql, "xiaoheidff", "1234", "1234",0);
+//        System.out.println("插入行数：" + rows);
     }
 
     /**
      * 查询返回某一个值：查询表中数据总数
      */
     public static void queryForOne(JdbcTemplate jdbcTemplate) {
-//        String sql = "select count(*) from user";
-//        调用方法获得记录数
-//        int count = jdbcTemplate.queryForObject(sql, Integer.class);
-//        System.out.println("数据总数：" + count);
+       int rows = jdbcTemplate.update("insert into t_message values(?,?,?,?,?)",
+                "1111",8, 7, 1, 1);
+        System.out.println(rows);
     }
 
     /**
@@ -54,10 +53,10 @@ public class JdbcTemplateDemo2 {
      * 步骤：新建MyRowMapper类实现RowMapper接口，重写mapRow方法，指定返回User对象
      */
     public static void queryForObject(JdbcTemplate jdbcTemplate) {
-        String sql = "select * from user where name = ?";
+//        String sql = "select * from user where name = ?";
 //        新建MyRowMapper类实现RowMapper接口，重写mapRow方法，指定返回User对象
-        User user = (User) jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper(User.class), "Tom");
-        System.out.println(user);
+//        User user = (User) jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper(User.class), "Tom");
+//        System.out.println(user);
     }
 
     /**
@@ -65,10 +64,10 @@ public class JdbcTemplateDemo2 {
      * 步骤：新建MyRowMapper类实现RowMapper接口，重写mapRow方法，指定返回User对象
      */
     public static void queryForList(JdbcTemplate jdbcTemplate) {
-        String sql = "select * from user";
+//        String sql = "select * from user";
 //        第三个参数可以省略
-        List<User> users = jdbcTemplate.query(sql, new BeanPropertyRowMapper(User.class));
-        System.out.println(users);
+//        List<User> users = jdbcTemplate.query(sql, new BeanPropertyRowMapper(User.class));
+//        System.out.println(users);
     }
 
 }

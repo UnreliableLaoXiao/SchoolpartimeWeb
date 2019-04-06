@@ -1,6 +1,7 @@
 package com.example.schoolparttime.controller;
 
 import com.example.schoolparttime.entity.ChatRecord;
+import com.example.schoolparttime.entity.Message;
 import com.example.schoolparttime.entity.base.ResultModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -23,7 +24,17 @@ public class ChatController {
         System.out.println("请求聊天记录的id = " + id);
         ArrayList<ChatRecord> query = (ArrayList<ChatRecord>) jdbcTemplate.query("select * from t_chat_record where id = ?",
                 new Object[]{id}, new BeanPropertyRowMapper(ChatRecord.class));
-        return new ResultModel<>("得到聊天记录", query, "json", 200);
+        System.out.println(query.get(0).toString());
+        return new ResultModel<>("得到聊天记录列表", query, "json", 200);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/messages", produces = "application/json;charset=UTF-8")
+    public ResultModel getChatRecord(long from,long to) {
+        System.out.println("from = " + from + " , to = " + to);
+        ArrayList<Message> query = (ArrayList<Message>) jdbcTemplate.query("select * from t_message where msg_from in (?,?) or msg_to in (?,?)",
+               new Object[]{from,to,from,to},new BeanPropertyRowMapper(Message.class) );
+        return new ResultModel<>("得到20条聊天记录",query,"json",200);
     }
 
 

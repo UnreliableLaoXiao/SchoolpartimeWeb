@@ -1,75 +1,75 @@
 package com.example.schoolparttime.entity;
 
 public class Message {
-    String mes;
+    String msg_mes;
 
-    long from;
+    long msg_from;
 
-    long to;
+    long msg_to;
 
-    int type;
+    int msg_type;
 
-    int state;
+    int msg_state;
 
-    public int getState() {
-        return state;
+    public String getMsg_mes() {
+        return msg_mes;
     }
 
-    public void setState(int state) {
-        this.state = state;
+    public void setMsg_mes(String msg_mes) {
+        this.msg_mes = msg_mes;
     }
 
-    public String getMes() {
-        return mes;
+    public long getMsg_from() {
+        return msg_from;
     }
 
-    public void setMes(String mes) {
-        this.mes = mes;
+    public void setMsg_from(long msg_from) {
+        this.msg_from = msg_from;
     }
 
-    public long getFrom() {
-        return from;
+    public long getMsg_to() {
+        return msg_to;
     }
 
-    public void setFrom(long from) {
-        this.from = from;
+    public void setMsg_to(long msg_to) {
+        this.msg_to = msg_to;
     }
 
-    public long getTo() {
-        return to;
+    public int getMsg_type() {
+        return msg_type;
     }
 
-    public void setTo(long to) {
-        this.to = to;
+    public void setMsg_type(int msg_type) {
+        this.msg_type = msg_type;
     }
 
-    public int getType() {
-        return type;
+    public int getMsg_state() {
+        return msg_state;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setMsg_state(int msg_state) {
+        this.msg_state = msg_state;
     }
 
     public Message() {
     }
 
-    public Message(String mes, long from, long to, int type, int state) {
-        this.mes = mes;
-        this.from = from;
-        this.to = to;
-        this.type = type;
-        this.state = state;
+    public Message(String msg_mes, long msg_from, long msg_to, int msg_type, int msg_state) {
+        this.msg_mes = msg_mes;
+        this.msg_from = msg_from;
+        this.msg_to = msg_to;
+        this.msg_type = msg_type;
+        this.msg_state = msg_state;
     }
 
     @Override
     public String toString() {
         return "Message{" +
-                "mes='" + mes + '\'' +
-                ", from=" + from +
-                ", to=" + to +
-                ", type=" + type +
-                ", state=" + state +
+                "msg_mes='" + msg_mes + '\'' +
+                ", msg_from=" + msg_from +
+                ", msg_to=" + msg_to +
+                ", msg_type=" + msg_type +
+                ", msg_state=" + msg_state +
                 '}';
     }
 }

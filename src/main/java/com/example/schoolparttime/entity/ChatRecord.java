@@ -12,22 +12,16 @@ public class ChatRecord {
     private String new_mes;   //最新消息
     private long other_id;   //聊天对象id
     private int state;
-    private String Date;
+    private String rcd_date;
 
-    public String getNew_mes() {
-        return new_mes;
-    }
-
-    public void setNew_mes(String new_mes) {
+    public ChatRecord(long id, String img, String name, String new_mes, long other_id, int state, String rcd_date) {
+        this.id = id;
+        this.img = img;
+        this.name = name;
         this.new_mes = new_mes;
-    }
-
-    public String getDate() {
-        return Date;
-    }
-
-    public void setDate(String date) {
-        Date = date;
+        this.other_id = other_id;
+        this.state = state;
+        this.rcd_date = rcd_date;
     }
 
     public long getId() {
@@ -36,22 +30,6 @@ public class ChatRecord {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public long getOther_id() {
-        return other_id;
-    }
-
-    public void setOther_id(long other_id) {
-        this.other_id = other_id;
-    }
-
-    public int getState() {
-        return state;
-    }
-
-    public void setState(int state) {
-        this.state = state;
     }
 
     public String getImg() {
@@ -70,11 +48,51 @@ public class ChatRecord {
         this.name = name;
     }
 
-    public String getMes() {
+    public String getNew_mes() {
         return new_mes;
     }
 
-    public void setMes(String new_mes) {
+    public void setNew_mes(String new_mes) {
         this.new_mes = new_mes;
+    }
+
+    public long getOther_id() {
+        return other_id;
+    }
+
+    public void setOther_id(long other_id) {
+        this.other_id = other_id;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+
+    public String getRcd_date() {
+        return rcd_date;
+    }
+
+    public void setRcd_date(String rcd_date) {
+        this.rcd_date = rcd_date;
+    }
+
+    public ChatRecord() {
+    }
+
+    @Override
+    public String toString() {
+        return "ChatRecord{" +
+                "id=" + id +
+                ", img='" + img + '\'' +
+                ", name='" + name + '\'' +
+                ", new_mes='" + new_mes + '\'' +
+                ", other_id=" + other_id +
+                ", state=" + state +
+                ", rcd_date='" + rcd_date + '\'' +
+                '}';
     }
 }

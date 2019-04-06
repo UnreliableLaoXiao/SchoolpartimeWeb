@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -227,6 +228,16 @@ public class UserController {
         }
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/getuserinfo",produces = "application/json;charset=UTF-8")
+    public ResultModel getUserinfo(long id) {
+        System.out.println("getUserinfo id is:" + id);
+
+        UserInfo userInfo = (UserInfo) jdbcTemplate.queryForObject("select * from t_u_info where id = ? ",
+                new Object[]{id}, new BeanPropertyRowMapper(UserInfo.class));
+        return new ResultModel<UserInfo>("得到用户信息", userInfo, "json", 200);
+    }
+
     /**
      * 数据库测试代码
      * @return
@@ -245,13 +256,6 @@ public class UserController {
         }
         System.out.println(file.getAbsolutePath());
         return userList;
-    }
-
-
-    public void saveMessage(Message message1) {
-        int rows = jdbcTemplate.update("insert into t_message (mes,from,to,type,state) values(?,?,?,?,?)",
-                message1.getMes(), message1.getFrom(), message1.getTo(), message1.getType(), message1.getState());
-        System.out.println(rows);
     }
 
 }

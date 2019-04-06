@@ -1,15 +1,16 @@
 package com.example.schoolparttime.controller;
 
-import com.example.schoolparttime.dao.MessageDao;
+import com.example.schoolparttime.dao.JdbcTemplateObject;
 import com.example.schoolparttime.entity.Message;
 import com.google.gson.Gson;
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.websocket.OnClose;
@@ -23,8 +24,9 @@ import javax.websocket.server.ServerEndpoint;
 @Component
 public class WebSocketServer {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    JdbcTemplateObject jdbcTemplateObject = new JdbcTemplateObject();
+    JdbcTemplate jdbcTemplate = jdbcTemplateObject.getJdbcTemplate();
+    SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
 
     /**
@@ -56,28 +58,32 @@ public class WebSocketServer {
         mLog.info("-->onClose a connect");
     }
 
-    @Autowired
-    private UserController messageDao;
-
     @OnMessage
     public void onMessage(String message, Session session) {
         mLog.info("-->onMessage " + message);
 
         Message message1 = gson.fromJson(message, Message.class);
 
-//        Message returnmes = new Message(message1.getMes(),message1.getTo(),message1.getFrom(),message1.getType(),message1.getState());
         // 这里选择的是让其他客户端都知道消息，类似于转发的聊天室，可根据使用场景使用
         for (WebSocketServer socketServer : sWebSocketServers) {
-//            socketServer.sendMessage(gson.toJson(returnmes));
-            if (socketServer.mid == message1.getTo()) {
-                message1.setState(1);
-                socketServer.sendMessage(message1.getMes());
+            if (socketServer.mid == message1.getMsg_to()) {
+                message1.setMsg_state(1);
+                socketServer.sendMessage(gson.toJson(message1));
             }
         }
         System.out.println(message1.toString());
-        int rows = jdbcTemplate.update("insert into t_message (mes,from,to,type,state) values(?,?,?,?,?)",
-                message1.getMes(), message1.getFrom(), message1.getTo(), message1.getType(), message1.getState());
-        System.out.println(rows);
+        String sql  = "insert into t_message (msg_mes,msg_from,msg_to,msg_type,msg_state) values(?,?,?,?,?)";
+        int rows = jdbcTemplate.update(sql,
+                new Object[]{message1.getMsg_mes(),message1.getMsg_from(),message1.getMsg_to(),message1.getMsg_type(),message1.getMsg_state()});
+        System.out.println("------------?>" +rows);
+
+        String sql_update = "update t_chat_record set new_mes = ?,date = ? where id in (?,?) and other_id in (?,?)";
+
+        Date date=new Date();
+        int rows1 = jdbcTemplate.update(sql_update,
+                new Object[]{message1.getMsg_mes(),df.format(date),message1.getMsg_from(),message1.getMsg_to()
+                        ,message1.getMsg_from(),message1.getMsg_to()});
+        System.out.println("------------?>" +rows1);
     }
 
     /**
@@ -93,23 +99,5 @@ public class WebSocketServer {
             return false;
         }
         return true;
-    }
-
-    /**
-     * 对某个机器发送消息
-     *
-     * @param message
-     * @param vmcNo   机器编号
-     * @return true, 返回发送的消息, false，返回failed字符串
-     */
-    public static String sendMessage(String message, long vmcNo) {
-        boolean success = false;
-        for (WebSocketServer server : sWebSocketServers) {
-            if (server.mid == vmcNo) {
-                success = server.sendMessage(message);
-                break;
-            }
-        }
-        return success ? message : "failed";
     }
 }
