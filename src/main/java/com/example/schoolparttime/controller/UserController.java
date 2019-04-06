@@ -1,5 +1,6 @@
 package com.example.schoolparttime.controller;
 
+import com.example.schoolparttime.entity.Message;
 import com.example.schoolparttime.entity.User;
 import com.example.schoolparttime.entity.UserInfo;
 import com.example.schoolparttime.entity.base.ResultModel;
@@ -244,6 +245,13 @@ public class UserController {
         }
         System.out.println(file.getAbsolutePath());
         return userList;
+    }
+
+
+    public void saveMessage(Message message1) {
+        int rows = jdbcTemplate.update("insert into t_message (mes,from,to,type,state) values(?,?,?,?,?)",
+                message1.getMes(), message1.getFrom(), message1.getTo(), message1.getType(), message1.getState());
+        System.out.println(rows);
     }
 
 }

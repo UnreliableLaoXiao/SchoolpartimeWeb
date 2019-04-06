@@ -50,4 +50,26 @@ public class Message {
     public void setType(int type) {
         this.type = type;
     }
+
+    public Message() {
+    }
+
+    public Message(String mes, long from, long to, int type, int state) {
+        this.mes = mes;
+        this.from = from;
+        this.to = to;
+        this.type = type;
+        this.state = state;
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "mes='" + mes + '\'' +
+                ", from=" + from +
+                ", to=" + to +
+                ", type=" + type +
+                ", state=" + state +
+                '}';
+    }
 }
