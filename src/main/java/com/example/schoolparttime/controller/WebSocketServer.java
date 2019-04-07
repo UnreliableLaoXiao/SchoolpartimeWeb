@@ -77,7 +77,7 @@ public class WebSocketServer {
                 new Object[]{message1.getMsg_mes(),message1.getMsg_from(),message1.getMsg_to(),message1.getMsg_type(),message1.getMsg_state()});
         System.out.println("------------?>" +rows);
 
-        String sql_update = "update t_chat_record set new_mes = ?,date = ? where id in (?,?) and other_id in (?,?)";
+        String sql_update = "update t_chat_record set new_mes = ?,rcd_date = ? where id in (?,?) and other_id in (?,?)";
 
         Date date=new Date();
         int rows1 = jdbcTemplate.update(sql_update,

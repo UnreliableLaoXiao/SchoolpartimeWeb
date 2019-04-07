@@ -1,6 +1,5 @@
 package com.example.schoolparttime.controller;
 
-import com.example.schoolparttime.entity.Message;
 import com.example.schoolparttime.entity.User;
 import com.example.schoolparttime.entity.UserInfo;
 import com.example.schoolparttime.entity.base.ResultModel;
@@ -9,7 +8,6 @@ import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -18,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -238,6 +237,24 @@ public class UserController {
         return new ResultModel<UserInfo>("得到用户信息", userInfo, "json", 200);
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/getusertype")
+    public int getUserTypeChange(long id) {
+
+        System.out.println("得到请求的ID："+id);
+
+        ArrayList<User> arrayList = (ArrayList<User>) jdbcTemplate.query("select * from t_user where id = ?",
+                new Object[]{id}, new BeanPropertyRowMapper(User.class));
+
+        if (arrayList.size() > 0) {
+            User user = arrayList.get(0);
+            return user.getType();
+        }
+
+        return 0;
+
+    }
+
     /**
      * 数据库测试代码
      * @return
@@ -257,5 +274,7 @@ public class UserController {
         System.out.println(file.getAbsolutePath());
         return userList;
     }
+
+
 
 }

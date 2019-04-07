@@ -32,7 +32,7 @@ public class ChatController {
     @RequestMapping(value = "/messages", produces = "application/json;charset=UTF-8")
     public ResultModel getChatRecord(long from,long to) {
         System.out.println("from = " + from + " , to = " + to);
-        ArrayList<Message> query = (ArrayList<Message>) jdbcTemplate.query("select * from t_message where msg_from in (?,?) or msg_to in (?,?)",
+        ArrayList<Message> query = (ArrayList<Message>) jdbcTemplate.query("select * from t_message where msg_from in (?,?) and msg_to in (?,?)",
                new Object[]{from,to,from,to},new BeanPropertyRowMapper(Message.class) );
         return new ResultModel<>("得到20条聊天记录",query,"json",200);
     }
