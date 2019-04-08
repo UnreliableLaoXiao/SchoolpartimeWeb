@@ -22,7 +22,7 @@ public class ChatController {
     @RequestMapping(value = "/chatrecord", produces = "application/json;charset=UTF-8")
     public ResultModel getRecord(long id) {
         System.out.println("请求聊天记录的id = " + id);
-        ArrayList<ChatRecord> query = (ArrayList<ChatRecord>) jdbcTemplate.query("select * from t_chat_record where id = ?",
+        ArrayList<ChatRecord> query = (ArrayList<ChatRecord>) jdbcTemplate.query("select * from t_chat_record where id = ? and state = 1",
                 new Object[]{id}, new BeanPropertyRowMapper(ChatRecord.class));
         System.out.println(query.get(0).toString());
         return new ResultModel<>("得到聊天记录列表", query, "json", 200);
@@ -35,6 +35,15 @@ public class ChatController {
         ArrayList<Message> query = (ArrayList<Message>) jdbcTemplate.query("select * from t_message where msg_from in (?,?) and msg_to in (?,?)",
                new Object[]{from,to,from,to},new BeanPropertyRowMapper(Message.class) );
         return new ResultModel<>("得到20条聊天记录",query,"json",200);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/getAllNoread", produces = "application/json;charset=UTF-8")
+    public ResultModel getChatRecord(long id) {
+        System.out.println("from = " + id );
+        int sum = jdbcTemplate.queryForObject("select sum(no_read) from t_chat_record where id = ?" , new Object[]{id},int.class);
+        System.out.println("得到未读消息总和"+sum);
+        return new ResultModel<Integer>("得到未读消息总和",sum,"json",200);
     }
 
 

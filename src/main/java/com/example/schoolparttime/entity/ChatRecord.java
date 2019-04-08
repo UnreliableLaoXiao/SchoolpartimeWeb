@@ -13,8 +13,9 @@ public class ChatRecord {
     private long other_id;   //聊天对象id
     private int state;
     private String rcd_date;
+    private int no_read;
 
-    public ChatRecord(long id, String img, String name, String new_mes, long other_id, int state, String rcd_date) {
+    public ChatRecord(long id, String img, String name, String new_mes, long other_id, int state, String rcd_date, int no_read) {
         this.id = id;
         this.img = img;
         this.name = name;
@@ -22,6 +23,10 @@ public class ChatRecord {
         this.other_id = other_id;
         this.state = state;
         this.rcd_date = rcd_date;
+        this.no_read = no_read;
+    }
+
+    public ChatRecord() {
     }
 
     public long getId() {
@@ -80,7 +85,12 @@ public class ChatRecord {
         this.rcd_date = rcd_date;
     }
 
-    public ChatRecord() {
+    public int getNo_read() {
+        return no_read;
+    }
+
+    public void setNo_read(int no_read) {
+        this.no_read = no_read;
     }
 
     @Override
@@ -93,6 +103,7 @@ public class ChatRecord {
                 ", other_id=" + other_id +
                 ", state=" + state +
                 ", rcd_date='" + rcd_date + '\'' +
+                ", no_read=" + no_read +
                 '}';
     }
 }

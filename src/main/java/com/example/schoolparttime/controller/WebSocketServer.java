@@ -75,7 +75,7 @@ public class WebSocketServer {
         String sql  = "insert into t_message (msg_mes,msg_from,msg_to,msg_type,msg_state) values(?,?,?,?,?)";
         int rows = jdbcTemplate.update(sql,
                 new Object[]{message1.getMsg_mes(),message1.getMsg_from(),message1.getMsg_to(),message1.getMsg_type(),message1.getMsg_state()});
-        System.out.println("------------?>" +rows);
+
 
         String sql_update = "update t_chat_record set new_mes = ?,rcd_date = ? where id in (?,?) and other_id in (?,?)";
 
@@ -83,7 +83,8 @@ public class WebSocketServer {
         int rows1 = jdbcTemplate.update(sql_update,
                 new Object[]{message1.getMsg_mes(),df.format(date),message1.getMsg_from(),message1.getMsg_to()
                         ,message1.getMsg_from(),message1.getMsg_to()});
-        System.out.println("------------?>" +rows1);
+
+        jdbcTemplate.update("update t_chat_record set no_read = no_read + 1 where id = ?",new Object[]{message1.getMsg_to()});
     }
 
     /**
