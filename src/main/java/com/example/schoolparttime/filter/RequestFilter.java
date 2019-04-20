@@ -40,7 +40,8 @@ public class RequestFilter {
         String md5_now = Md5Util.build(body_json);
 
         long time = Long.valueOf(token);
-        if(System.currentTimeMillis() - time < 10000){
+        System.out.println("time = " + (System.currentTimeMillis() - time));
+        if(System.currentTimeMillis() - time < 100000){
             if(md5_now.equals(md5_old)) {
                 filter.success(body_json);
             }else {

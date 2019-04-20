@@ -53,7 +53,7 @@ public class UserController {
 
                     List query = jdbcTemplate.query("select * from t_user where username = '"
                             + data_user.getUsername() + "' and password = '" + data_user.getPassword() + "'", new BeanPropertyRowMapper(User.class));
-                    if (query != null){
+                    if (query != null || query.size() > 0){
                         user[0] = (User) query.get(0);
                         result[0] = 2;
                     }else {
@@ -71,6 +71,8 @@ public class UserController {
                     result[0] = 4;
                 }
             });
+
+            System.out.println("result " + result[0]);
 
             if (result[0] == 1) {
                 return new ResultModel<User>("账号或密码错误", null, "json", 400);
