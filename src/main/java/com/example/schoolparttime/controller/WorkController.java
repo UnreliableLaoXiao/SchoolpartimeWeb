@@ -56,7 +56,13 @@ public class WorkController {
         return new ResultModel<ArrayList<WorkType>>("得到所有兼职类型",workTypes,"json",200);
     }
 
-
+    @RequestMapping("/work/mysendwork")
+    @ResponseBody
+    public ResultModel<ArrayList<WorkInfo>> getMySendWorks(long id){
+        ArrayList<WorkInfo> workInfos;
+        workInfos = (ArrayList<WorkInfo>) jdbcTemplate.query("select * from t_work_info where boss_id = ?",new Object[]{ id},new BeanPropertyRowMapper(WorkInfo.class));
+        return new ResultModel<ArrayList<WorkInfo>>("得到所有我发布的兼职",workInfos,"json",200);
+    }
 
     /**
      * 数据库测试代码
@@ -65,8 +71,7 @@ public class WorkController {
     @RequestMapping("/work/alllist")
     @ResponseBody
     public List<WorkInfo> list(){
-
-        List<WorkInfo> userList = jdbcTemplate.query("select * from t_work_info where statu = 0",new BeanPropertyRowMapper(WorkInfo.class));
+        List<WorkInfo> userList = jdbcTemplate.query("select * from t_work_info",new BeanPropertyRowMapper(WorkInfo.class));
         return userList;
     }
 

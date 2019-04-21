@@ -5,9 +5,9 @@ package com.example.schoolparttime.entity;
  * 商家发布的兼职信息
  */
 public class WorkInfo {
-    private Integer id;   //工作信息编号
-    private Integer bossId;   //商家编号，外键
-    private Integer workTypeId;   //兼职类型
+    private long id;   //工作信息编号
+    private long bossId;   //商家编号，外键
+    private int workTypeId;   //兼职类型
     private String workTitle;   //招聘信息标题
     private String money;   //薪水
     private String createTime;   //发布时间
@@ -17,28 +17,48 @@ public class WorkInfo {
     private String city;   //所在城市(市)
     private String contacts;   //联系人
     private String contactsWay;   //联系人方式
+    private int workStatu;  //兼职状态
 
-    public Integer getId() {
+    public WorkInfo(long id, long bossId, int workTypeId, String workTitle, String money, String createTime, String end_way, String workContext, String address, String city, String contacts, String contactsWay, int workStatu) {
+        this.id = id;
+        this.bossId = bossId;
+        this.workTypeId = workTypeId;
+        this.workTitle = workTitle;
+        this.money = money;
+        this.createTime = createTime;
+        this.end_way = end_way;
+        this.workContext = workContext;
+        this.address = address;
+        this.city = city;
+        this.contacts = contacts;
+        this.contactsWay = contactsWay;
+        this.workStatu = workStatu;
+    }
+
+    public WorkInfo() {
+    }
+
+    public long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public Integer getbossId() {
+    public long getBossId() {
         return bossId;
     }
 
-    public void setbossId(Integer bossId) {
+    public void setBossId(long bossId) {
         this.bossId = bossId;
     }
 
-    public Integer getworkTypeId() {
+    public int getWorkTypeId() {
         return workTypeId;
     }
 
-    public void setworkTypeId(Integer workTypeId) {
+    public void setWorkTypeId(int workTypeId) {
         this.workTypeId = workTypeId;
     }
 
@@ -74,11 +94,11 @@ public class WorkInfo {
         this.end_way = end_way;
     }
 
-    public String getworkContext() {
+    public String getWorkContext() {
         return workContext;
     }
 
-    public void setworkContext(String workContext) {
+    public void setWorkContext(String workContext) {
         this.workContext = workContext;
     }
 
@@ -114,22 +134,12 @@ public class WorkInfo {
         this.contactsWay = contactsWay;
     }
 
-    public WorkInfo(Integer id, Integer bossId, Integer workTypeId, String workTitle, String money, String createTime, String end_way, String workContext, String address, String city, String contacts, String contactsWay) {
-        this.id = id;
-        this.bossId = bossId;
-        this.workTypeId = workTypeId;
-        this.workTitle = workTitle;
-        this.money = money;
-        this.createTime = createTime;
-        this.end_way = end_way;
-        this.workContext = workContext;
-        this.address = address;
-        this.city = city;
-        this.contacts = contacts;
-        this.contactsWay = contactsWay;
+    public int getWorkStatu() {
+        return workStatu;
     }
 
-    public WorkInfo() {
+    public void setWorkStatu(int workStatu) {
+        this.workStatu = workStatu;
     }
 
     @Override
@@ -147,6 +157,7 @@ public class WorkInfo {
                 ", city='" + city + '\'' +
                 ", contacts='" + contacts + '\'' +
                 ", contactsWay='" + contactsWay + '\'' +
+                ", workStatu=" + workStatu +
                 '}';
     }
 }
