@@ -1,8 +1,10 @@
 package com.example.schoolparttime.controller;
 
+import com.example.schoolparttime.entity.City;
 import com.example.schoolparttime.entity.WorkInfo;
 import com.example.schoolparttime.entity.WorkType;
 import com.example.schoolparttime.entity.base.ResultModel;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,6 +20,8 @@ public class WorkController {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    Gson gson = new Gson();
 
 
 
@@ -63,6 +67,47 @@ public class WorkController {
         workInfos = (ArrayList<WorkInfo>) jdbcTemplate.query("select * from t_work_info where boss_id = ?",new Object[]{ id},new BeanPropertyRowMapper(WorkInfo.class));
         return new ResultModel<ArrayList<WorkInfo>>("得到所有我发布的兼职",workInfos,"json",200);
     }
+
+    @RequestMapping("/work/citys")
+    @ResponseBody
+    public ResultModel<ArrayList<City>> getCitys(){
+        ArrayList<City> cities;
+        cities = (ArrayList<City>) jdbcTemplate.query("select * from t_city",new BeanPropertyRowMapper(City.class));
+        return new ResultModel<ArrayList<City>>("得到城市列表",cities,"json",200);
+    }
+
+    @RequestMapping("/work/newwork")
+    @ResponseBody
+    public ResultModel<String> getMySendWorks(String data){
+        System.out.println(data);
+
+        WorkInfo workInfo = gson.fromJson(data,WorkInfo.class);
+        int rows = jdbcTemplate.update("insert into t_work_info VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                workInfo.getId(),workInfo.getBossId(),workInfo.getWorkTypeId(),workInfo.getWorkTitle(),workInfo.getMoney(),
+                workInfo.getCreateTime(),workInfo.getEnd_way(),workInfo.getWorkContext(),workInfo.getAddress(),workInfo.getCity(),
+                workInfo.getContacts(),workInfo.getContactsWay(),workInfo.getWorkStatu());
+        List query = jdbcTemplate.query("select * from t_city where city_name = ?", new Object[]{workInfo.getCity()}, new BeanPropertyRowMapper(City.class));
+        if (query.size() == 0 || query == null)
+            jdbcTemplate.update("insert into t_city VALUES (?,?)", 0,workInfo.getCity());
+        if (rows > 0)
+            return new ResultModel<String>("发布成功","","json",200);
+        else
+            return new ResultModel<String>("发布失败","","json",300);
+    }
+
+
+
+
+    @RequestMapping("/work/soldoutwork")
+    @ResponseBody
+    public ResultModel<String> soldWorkInfo(long id){
+        int rows = jdbcTemplate.update("update t_work_info set work_statu = 1 where id = ?", id);
+        if (rows > 0)
+            return new ResultModel<String>("下架成功","","json",200);
+        else
+            return new ResultModel<String>("下架失败","","json",300);
+    }
+
 
     /**
      * 数据库测试代码
