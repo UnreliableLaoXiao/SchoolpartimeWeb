@@ -1,8 +1,6 @@
 package com.example.schoolparttime.controller;
 
-import com.example.schoolparttime.entity.City;
-import com.example.schoolparttime.entity.WorkInfo;
-import com.example.schoolparttime.entity.WorkType;
+import com.example.schoolparttime.entity.*;
 import com.example.schoolparttime.entity.base.ResultModel;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +18,7 @@ public class WorkController {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
     Gson gson = new Gson();
-
 
 
     @RequestMapping("/work/allwork")
@@ -106,6 +102,98 @@ public class WorkController {
             return new ResultModel<String>("下架成功","","json",200);
         else
             return new ResultModel<String>("下架失败","","json",300);
+    }
+
+    @RequestMapping("/work/setliketype")
+    @ResponseBody
+    public ResultModel<String> setLikeType(long id,int type1,int type2,int type3){
+        int rows;
+        List query = jdbcTemplate.query("select * from t_user_likework where user_id = ?", new Object[]{id}, new BeanPropertyRowMapper(UserLikeWorkType.class));
+        if (query.size() > 0){
+            rows = jdbcTemplate.update("update t_user_likework set like_type_1 = ?,like_type_2 = ?,like_type_3 = ? where user_id = ?",type1,type2,type3, id);
+        }else {
+            rows = jdbcTemplate.update("insert into t_user_likework VALUES (0,?,?,?,?)", id ,type1,type2,type3);
+        }
+
+        if (rows > 0)
+            return new ResultModel<String>("修改成功","","json",200);
+        else
+            return new ResultModel<String>("修改失败","","json",300);
+    }
+
+    @RequestMapping("/work/searchtitle")
+    @ResponseBody
+    public ResultModel<ArrayList<WorkInfo>> getTitleSearch(String title){
+        ArrayList<WorkInfo> query = (ArrayList<WorkInfo>) jdbcTemplate.query("select * from t_work_info where work_title like ?", new Object[]{"%"+title+"%"}, new BeanPropertyRowMapper(WorkInfo.class));
+        if (query.size() > 0){
+            return new ResultModel<ArrayList<WorkInfo>>("搜索成功",query,"json",200);
+        }else {
+            return new ResultModel<ArrayList<WorkInfo>>("搜索失败",query,"json",300);
+        }
+    }
+    @RequestMapping("/work/search")
+    @ResponseBody
+    public ResultModel<ArrayList<WorkInfo>> getSearch(String city,int work_type_id){
+        System.out.println(" city = " + city + ", work_type_id = " + work_type_id);
+
+        ArrayList<WorkInfo> query;
+
+        if (!"".equals(city) && work_type_id != 0){
+            System.out.println("city = " + city + " work_type_id = " + work_type_id);
+            query = (ArrayList<WorkInfo>) jdbcTemplate.query("select * from t_work_info where city = ? and work_type_id = ? and work_statu = 0",
+                    new Object[]{city,work_type_id}, new BeanPropertyRowMapper(WorkInfo.class));
+        }else if ("".equals(city) && work_type_id != 0) {
+            System.out.println("city = " + city + " work_type_id = " + work_type_id);
+            query = (ArrayList<WorkInfo>) jdbcTemplate.query("select * from t_work_info where work_type_id = ? and work_statu = 0",
+                    new Object[]{work_type_id}, new BeanPropertyRowMapper(WorkInfo.class));
+        }else if (!"".equals(city) && work_type_id == 0){
+            System.out.println("city = " + city + " work_type_id = " + work_type_id);
+            query = (ArrayList<WorkInfo>) jdbcTemplate.query("select * from t_work_info where city = ? and work_statu = 0",
+                    new Object[]{city}, new BeanPropertyRowMapper(WorkInfo.class));
+        }else {
+            System.out.println("city = " + city + " work_type_id = " + work_type_id);
+            query = (ArrayList<WorkInfo>) jdbcTemplate.query(
+                    "select * from t_work_info where work_statu = 0",new BeanPropertyRowMapper(WorkInfo.class));
+        }
+
+        System.out.println("size = " + query.size());
+
+        if (query.size() > 0){
+            return new ResultModel<ArrayList<WorkInfo>>("搜索成功",query,"json",200);
+        }else {
+            return new ResultModel<ArrayList<WorkInfo>>("搜索失败",query,"json",300);
+        }
+    }
+
+
+    @RequestMapping("/work/collectwork")
+    @ResponseBody
+    public ResultModel<String> setCollect( long userid, long workid ,boolean like ){
+        int rows;
+        if (like){
+            rows = jdbcTemplate.update("insert into t_user_collect VALUES (?,?,?)",0,userid,workid);
+        }else {
+            rows = jdbcTemplate.update("delete from t_user_collect where user_id = ? and work_id = ?",userid,workid);
+        }
+        if (rows > 0){
+            return new ResultModel<String>("操作成功","","json",200);
+        }else {
+            return new ResultModel<String>("操作失败","","json",300);
+        }
+    }
+
+    @RequestMapping("/work/getcollectwork")
+    @ResponseBody
+    public ResultModel<ArrayList<UserCollect>> getCollect( long userid){
+        ArrayList<UserCollect> query;
+        query = (ArrayList<UserCollect>) jdbcTemplate.query("select * from t_user_collect where user_id = ?",
+                new Object[]{userid}, new BeanPropertyRowMapper(UserCollect.class));
+        if (query.size() > 0){
+            return new ResultModel<ArrayList<UserCollect>>("得到收藏兼职",query,"json",200);
+        }else {
+            return new ResultModel<ArrayList<UserCollect>>("得到收藏兼职",query,"json",300);
+        }
+
     }
 
 
