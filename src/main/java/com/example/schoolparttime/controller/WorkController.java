@@ -196,6 +196,57 @@ public class WorkController {
 
     }
 
+    @RequestMapping("/work/getcollectworkinfo")
+    @ResponseBody
+    public ResultModel<ArrayList<WorkInfo>> getCollectWorkInfo( long userid){
+        ArrayList<WorkInfo> query;
+        query = (ArrayList<WorkInfo>) jdbcTemplate.query("select * from t_work_info where id in " +
+                        "(select work_id from t_user_collect where user_id = ?)",
+                new Object[]{userid}, new BeanPropertyRowMapper(WorkInfo.class));
+        if (query.size() > 0){
+            return new ResultModel<ArrayList<WorkInfo>>("得到收藏兼职信息",query,"json",200);
+        }else {
+            return new ResultModel<ArrayList<WorkInfo>>("得到收藏兼职信息",query,"json",300);
+        }
+    }
+
+    @RequestMapping("/work/delcollectworkinfo")
+    @ResponseBody
+    public ResultModel<String> delCollectWorkInfo( long userid){
+        int update = jdbcTemplate.update("delete  from t_user_collect where user_id = ?", userid);
+        if (update > 0){
+            return new ResultModel<String>("删除收藏兼职信息","删除成功","json",200);
+        }else {
+            return new ResultModel<String>("删除收藏兼职信息","删除失败","json",300);
+        }
+    }
+
+    @RequestMapping("/work/addRequest")
+    @ResponseBody
+    public ResultModel<String> addRequestInfo( long userid,long workid){
+        int rows = jdbcTemplate.update("insert into t_user_request VALUES (?,?,?,?)",0,userid,workid,0);
+        if (rows > 0 ) {
+            return new ResultModel<String>("申请兼职信息","申请成功","json",200);
+        }else {
+            return new ResultModel<String>("申请兼职信息","申请失败","json",300);
+        }
+    }
+
+    @RequestMapping("/work/requestlist")
+    @ResponseBody
+    public ResultModel<ArrayList<RequestWork>> requestList( long userid){
+        ArrayList<RequestWork> query;
+        query = (ArrayList<RequestWork>) jdbcTemplate.query("select * from t_user_request where user_id = ?",
+                new Object[]{userid}, new BeanPropertyRowMapper(RequestWork.class));
+        if (query.size() > 0) {
+            return new ResultModel<ArrayList<RequestWork>>("得到申请兼职列表信息成功",query,"json",200);
+        }else {
+            return new ResultModel<ArrayList<RequestWork>>("得到申请兼职列表信息失败",query,"json",300);
+        }
+    }
+
+
+
 
     /**
      * 数据库测试代码
@@ -207,5 +258,7 @@ public class WorkController {
         List<WorkInfo> userList = jdbcTemplate.query("select * from t_work_info",new BeanPropertyRowMapper(WorkInfo.class));
         return userList;
     }
+
+
 
 }

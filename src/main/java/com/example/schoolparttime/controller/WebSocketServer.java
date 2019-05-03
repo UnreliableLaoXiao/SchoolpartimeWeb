@@ -48,7 +48,7 @@ public class WebSocketServer {
     public void onOpen(Session session, @PathParam("id") long id) {
         mSession = session;
         sWebSocketServers.add(this); // 将回话保存
-        mLog.info("-->onOpen new connect vmcNo is " + id);
+        mLog.info("-->onOpen new connect id is " + id);
         mid = id;
     }
 
