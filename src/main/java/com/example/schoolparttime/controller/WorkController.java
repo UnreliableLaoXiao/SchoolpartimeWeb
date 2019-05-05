@@ -64,6 +64,14 @@ public class WorkController {
         return new ResultModel<ArrayList<WorkInfo>>("得到所有我发布的兼职",workInfos,"json",200);
     }
 
+    @RequestMapping("/work/myrequestwork")
+    @ResponseBody
+    public ResultModel<ArrayList<WorkInfo>> getMyRequestWorks(long id){
+        ArrayList<WorkInfo> workInfos;
+        workInfos = (ArrayList<WorkInfo>) jdbcTemplate.query("select * from t_work_info where boss_id = ? and work_statu = 0",new Object[]{ id},new BeanPropertyRowMapper(WorkInfo.class));
+        return new ResultModel<ArrayList<WorkInfo>>("得到所有我发布的兼职",workInfos,"json",200);
+    }
+
     @RequestMapping("/work/citys")
     @ResponseBody
     public ResultModel<ArrayList<City>> getCitys(){
@@ -110,9 +118,9 @@ public class WorkController {
         int rows;
         List query = jdbcTemplate.query("select * from t_user_likework where user_id = ?", new Object[]{id}, new BeanPropertyRowMapper(UserLikeWorkType.class));
         if (query.size() > 0){
-            rows = jdbcTemplate.update("update t_user_likework set like_type_1 = ?,like_type_2 = ?,like_type_3 = ? where user_id = ?",type1,type2,type3, id);
+            rows = jdbcTemplate.update("update t_user_likework set like_type1 = ?,like_type2 = ?,like_type3 = ? where user_id = ?",type1,type2,type3, id);
         }else {
-            rows = jdbcTemplate.update("insert into t_user_likework VALUES (0,?,?,?,?)", id ,type1,type2,type3);
+            rows = jdbcTemplate.update("insert into t_user_likework VALUES (?,?,?,?,?)",null, id ,type1,type2,type3);
         }
 
         if (rows > 0)
@@ -120,6 +128,23 @@ public class WorkController {
         else
             return new ResultModel<String>("修改失败","","json",300);
     }
+
+    @RequestMapping("/work/getliketype")
+    @ResponseBody
+    public ResultModel<String> getLikeType(long id){
+        System.out.println("id"+id);
+        ArrayList<UserLikeWorkType> query = (ArrayList<UserLikeWorkType>) jdbcTemplate.query("select * from t_user_likework where user_id = ?", new Object[]{id}, new BeanPropertyRowMapper(UserLikeWorkType.class));
+        if (query.size() > 0){
+            UserLikeWorkType userLikeWorkType = query.get(0);
+            System.out.println(userLikeWorkType.toString());
+            return new ResultModel<String>("申请成功",
+                    userLikeWorkType.getLikeType1()+","+userLikeWorkType.getLikeType2()+","+userLikeWorkType.getLikeType3(),
+                    "json",200);
+        }
+        else
+            return new ResultModel<String>("申请失败","","json",300);
+    }
+
 
     @RequestMapping("/work/searchtitle")
     @ResponseBody
@@ -246,6 +271,57 @@ public class WorkController {
     }
 
 
+    @RequestMapping("/work/getpeoplelist")
+    @ResponseBody
+    public ResultModel<ArrayList<UserInfo>> getpeoplelist( long workid){
+        ArrayList<UserInfo> query;
+        query = (ArrayList<UserInfo>) jdbcTemplate.query("select * from t_u_info where id in (select user_id from t_user_request where work_id = ? and statu = 0)",
+                new Object[]{workid}, new BeanPropertyRowMapper(UserInfo.class));
+        if (query.size() > 0) {
+            return new ResultModel<ArrayList<UserInfo>>("得到人列表成功",query,"json",200);
+        }else {
+            return new ResultModel<ArrayList<UserInfo>>("得到人列表失败",query,"json",300);
+        }
+    }
+
+
+
+    @RequestMapping("/work/getrequest")
+    @ResponseBody
+    public ResultModel<ArrayList<WorkInfo>> getRequest( long userid,int statu){
+        ArrayList<WorkInfo> query;
+        query = (ArrayList<WorkInfo>) jdbcTemplate.query("select * from t_work_info where id in (select work_id from t_user_request where user_id = ? and statu = ?)",
+                new Object[]{userid,statu}, new BeanPropertyRowMapper(WorkInfo.class));
+        if (query.size() > 0) {
+            return new ResultModel<ArrayList<WorkInfo>>("得到申请兼职列表信息成功",query,"json",200);
+        }else {
+            return new ResultModel<ArrayList<WorkInfo>>("得到申请兼职列表信息失败",query,"json",300);
+        }
+    }
+
+    @RequestMapping("/work/requestyes")
+    @ResponseBody
+    public ResultModel<String> getRequest( long userid , long workid ,int statu){
+        System.out.println("操作申请 userid = " + userid + " workid = " + workid + " statu = " + statu);
+        int update = jdbcTemplate.update("update t_user_request set statu = ? where user_id = ? and work_id = ?",
+                statu , userid, workid);
+        if (update > 0) {
+            return new ResultModel<String>("同意申请成功","","json",200);
+        }else {
+            return new ResultModel<String>("同意申请失败","","json",300);
+        }
+    }
+
+    @RequestMapping("/work/clearall")
+    @ResponseBody
+    public ResultModel<String> clearALl( long userid){
+        int update = jdbcTemplate.update("delete from t_user_request where user_id = ?", userid);
+        if (update > 0) {
+            return new ResultModel<String>("清空成功","","json",200);
+        }else {
+            return new ResultModel<String>("清空失败","","json",300);
+        }
+    }
 
 
     /**
